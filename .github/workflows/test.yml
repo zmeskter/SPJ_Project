@@ -21,5 +21,4 @@ jobs:
     - name: Install dependencies
       run: julia -e 'import Pkg; Pkg.instantiate()'
 
-    - name: Run tests
-      run: julia --project=test/ -e 'import Pkg; Pkg.test()'
+    - uses: julia-actions/julia-runtest@latest
