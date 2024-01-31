@@ -10,15 +10,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-
-    - name: Set up Julia
-      uses: julia-actions/setup-julia@latest
-      with:
-        version: 1.8
-
-    - name: Install dependencies
-      run: julia -e 'import Pkg; Pkg.instantiate()'
-
-    - uses: julia-actions/julia-runtest@latest
+        - name: Checkout code
+          uses: actions/checkout@v2
+          with:
+            node-version: '20'  # Use the version you prefer
+    
+        - name: Setup Julia
+          uses: julia-actions/setup-julia@latest
+          with:
+            version: '1.8'  # Use the version you prefer
+    
+        - name: Run tests
+          uses: julia-actions/julia-runtest@latest
