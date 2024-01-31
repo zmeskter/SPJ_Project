@@ -1,6 +1,7 @@
 using Pkg
 Pkg.activate(pwd() * "/examples")
 Pkg.instantiate()
+Pkg.resolve()
 using Revise # this must come before `using PCDGroundRemoval`
 using PCDGroundRemoval
 using BenchmarkTools
