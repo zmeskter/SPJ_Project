@@ -1,10 +1,11 @@
 using Pkg
 Pkg.activate(pwd() * "/examples")
 Pkg.instantiate()
-Pkg.resolve()
 using Revise # this must come before `using PCDGroundRemoval`
 using PCDGroundRemoval
 using BenchmarkTools
+using Profile, ProfileSVG
+
 
 #load data
 points = read_xyz("data//1651738515.007457803.xyz")
@@ -22,6 +23,14 @@ points = remove_drone(points, distances)
 grid = make_pillar_grid(points;grid_box_size= 1.8)
 @benchmark make_pillar_grid(points;grid_box_size= 1.8)
 @benchmark make_pillar_grid_old(points;grid_box_size= 1.8)
+Profile.clear()
+@profile make_pillar_grid(points;grid_box_size= 1.8)
+ProfileSVG.save("make_pillar_grid_new.svg")
+Profile.clear()
+@profile make_pillar_grid_old(points;grid_box_size= 1.8)
+ProfileSVG.save("make_pillar_grid_old.svg")
+
+
 #label ground points
 ground = label_ground_points(grid; threshold = 0.4)
 possible_ground_idx = findall(pts -> pts < 0, ground[:,3])
