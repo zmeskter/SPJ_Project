@@ -1,4 +1,4 @@
-module PCDGroundRemoval
+module SPJ_Project
 using Clustering
 using Random
 using Base.Threads
@@ -204,8 +204,6 @@ function remove_ground_points_old(grid::Array{<:Real}; threshold = 0.45)
         no_ground_points_idx = findall(pts -> pts >= min_point + threshold, real_points[:, 3])
         no_ground_points = real_points[no_ground_points_idx, :]
 
-
-        # Append non-ground points directly without concatenation
         no_ground_pts = vcat(no_ground_pts, no_ground_points)
     end
 
