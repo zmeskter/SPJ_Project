@@ -27,6 +27,8 @@ For example.jl to work properly you need to activate the examples environment:
 First we remove the drone points -> i.e. points at a small distance from the point (0 , 0 , 0), where distance is the drone diameter. 
 Then the remaining points are sorted into a grid, where each pillar has a square base of the specified edge length. Then, the lowest point in each pillar (the first ground point) is found and points within a small distance from this point are labled as ground points.
 
+The fit of the plane through the lowest points in the adjacent pillars and the subsequent removal of the ground point below this plane proved to be inappropriate in this case due to the uneven terrain, therefore the above-described variant was chosen.
+
 ![](https://github.com/zmeskter/SPJ_Project/blob/main/data/doc_pic/without_ground.png)
 
 ## Classification of bare trunks
