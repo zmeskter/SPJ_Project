@@ -105,12 +105,29 @@ function make_pillar_grid_old(points::Matrix{<:Real}; grid_box_size = 1.8)
     return delete_zero(grid)
 end
 
+"""
+    my_extremas(points::Matrix{<:Real}, grid_box_size)
+
+Take Nx3 Matrix of points and returns the amount of pillar for each of the axes (x and y) on each side from zero. 
+Min corresponds to the number of pillars from zero to negative and max from zero to positive numbers.
+"""
 function my_extremas(points::Matrix{<:Real}, grid_box_size)
     x_max = ceil(Int64,ceil( (abs(maximum(points[:,1]))))/grid_box_size)
     y_max = ceil(Int64,ceil((abs(maximum(points[:,2]))))/grid_box_size)
     x_min = ceil(Int64,ceil((abs(minimum(points[:,1]))))/grid_box_size)
     y_min = ceil(Int64,ceil((abs(minimum(points[:,2]))))/grid_box_size)
     return x_max,y_max,x_min, y_min
+end
+
+"""
+    remove_drone(points::Matrix{<:Real}, distances::Vector{<:Real})
+
+Take Nx3 Matrix of points and return Nx3 Matrix if points without those which represents the drone
+"""
+function remove_drone(points::Matrix{<:Real}, distances::Vector{<:Real})
+    keep_indices = (distances .!= 0) .& (distances .> 0.35)
+
+    return points[keep_indices, :]
 end
 
 function remove_drone_old(points::Matrix{<:Real}, distances::Array{<:Real})
@@ -122,16 +139,8 @@ function remove_drone_old(points::Matrix{<:Real}, distances::Array{<:Real})
     return points
 end
 
-function remove_drone(points::Matrix{<:Real}, distances::Vector{<:Real})
-    # Find indices of points to keep
-    keep_indices = (distances .!= 0) .& (distances .> 0.35)
-
-    # Use logical indexing to extract the desired points
-    return points[keep_indices, :]
-end
-
 """
-    remove_ground_points(grid::Array{<:Real}; threshold = 0.45)
+    label_ground_points(grid::Array{<:Real}; threshold = 0.45)
 
 Take grid (NxMx3 array) with the points sorted into pillars and return 
 the Nx3 matrix of the points labeled as ground.

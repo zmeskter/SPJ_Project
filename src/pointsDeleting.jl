@@ -39,7 +39,7 @@ function delete_zero(points::Array{<:Real,3})
         return similar(points, 0, 0, 0)  # Return an empty array if no non-zero elements are found
     end
 
-    grid2 = points[sort(indexes), :, :]  # Sort indexes to ensure correct order
+    grid2 = points[sort(indexes), :, :]  # Sort indexes to make sure they are in correct order
     return copy(grid2)
 end
 
@@ -57,32 +57,27 @@ function delete_zero_old(points::Array{<:Real,3})
     return grid2
 end
 
-"""
-    delete_zero(points::Array{<:Real,2})
-
-take Nx3 Matrix of 3D point and delete all occurrences of point [0,0,0]
-# Examples
-```julia-repl
-julia> delete_zero([1 1 1; 0 0 0; 2 2 2])
-2x3 Matrix{Float64}:
- 1.0  1.0  1.0
- 2.0  2.0  2.0
-```
-"""
 function delete_zero(points::Array{<:Real,2})
-    
-    indexes = []
-    for i=1:size(points)[1]
-        #println(sum(points[i,:]), "   ", i)
-        if sum(abs.(points[i,:,:])) != 0
-            append!(indexes, i)
+    indexes = Int[]
+    my_lock = SpinLock()
+
+    @threads for i in 1:size(points, 1)
+        if any(x -> x != 0, points[i, :, :])
+            lock(my_lock)
+            try
+                push!(indexes, i)
+            finally
+                unlock(my_lock)
+            end
         end
     end
-    real_points = zeros((size(indexes)[1], 3))
-    for i = 1:size(indexes)[1]
-        real_points[i,:] = points[indexes[i],:]
+
+    if isempty(indexes)
+        return similar(points, 0, 0)  # Return an empty array if no non-zero elements are found
     end
-    return real_points
+
+    grid2 = points[sort(indexes), :]  # Sort indexes to make sure they are in correct order
+    return copy(grid2)
 end
 
 export delete_zero
