@@ -188,7 +188,6 @@ function remove_ground_points(grid::Array{<:Real}; threshold = 0.45)
         min_point = minimum(real_points[:, 3])
         no_ground_points = real_points[real_points[:, 3] .>= min_point + threshold, :]
 
-        # Append non-ground points directly without concatenation
         no_ground_pts = vcat(no_ground_pts, no_ground_points)
     end
 
